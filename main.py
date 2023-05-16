@@ -44,5 +44,22 @@ def login():
     return json.dumps(res, ensure_ascii=False)
 
 
+@app.route('/reset_passwd')
+def reset_passwd():
+    username = flask.request.values.get('username')
+    origin_passwd = flask.request.values.get('origin_passwd')
+    new_passwd = flask.request.values.get('new_passwd')
+    if username and origin_passwd and new_passwd:
+        o_passwd = db.get_md5(origin_passwd)
+        n_passwd = db.get_md5(new_passwd)
+        if db.is_existed(username, o_passwd):
+            sql = 'update register set password="%s" where username = "%s"' % (n_passwd, username)
+            if db.command_db(sql):
+                res = {'msg': '修改成功', 'msg_code': '1020'}
+        else:
+            res = {'msg': '修改失败', 'msg_code': '0021'}
+    return json.dumps(res, ensure_ascii=False)
+
+
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
