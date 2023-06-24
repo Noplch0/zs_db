@@ -61,5 +61,17 @@ def reset_passwd():
     return json.dumps(res, ensure_ascii=False)
 
 
+@app.route('/get_data')
+def get_data():
+    table = flask.request.values.get('table')
+    code = flask.request.values.get('code')
+    result = db.query(table, code)
+    if result:
+        return json.dumps(result, ensure_ascii=False)
+    else:
+        res = {'msg': '查询失败', 'msg_code': '0031'}
+        return json.dumps(res, ensure_ascii=False)
+
+
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
