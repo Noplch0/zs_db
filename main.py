@@ -1,8 +1,17 @@
+import decimal
 import json
 import flask
 from lib import db
+from lib import get_data as gd
 
 app = flask.Flask(__name__)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        super(DecimalEncoder, self).default(o)
 
 
 @app.route('/reg')
@@ -65,12 +74,26 @@ def reset_passwd():
 def get_data():
     table = flask.request.values.get('table')
     code = flask.request.values.get('code')
+    if table == 'balancesheet':
+        value = gd.get_balancesheet(code)
+        db.insert_data(table, value)
+    elif table == 'cashflow':
+        value = gd.get_cashflow(code)
+        db.insert_data(table, value)
+    elif table == 'income_statement':
+        value = gd.get_income_statement(code)
+        db.insert_data(table, value)
+    elif table == 'week_line':
+        value = gd.get_weel_line(code)
+        db.insert_data(table, value)
     result = db.query(table, code)
+    print(value)
+    print(result)
     if result:
-        return json.dumps(result, ensure_ascii=False)
+        return json.dumps(result, ensure_ascii=False,cls=DecimalEncoder)
     else:
         res = {'msg': '查询失败', 'msg_code': '0031'}
-        return json.dumps(res, ensure_ascii=False)
+        return json.dumps(res, ensure_ascii=False,cls=DecimalEncoder)
 
 
 if __name__ == '__main__':
