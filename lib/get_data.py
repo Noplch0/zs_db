@@ -60,4 +60,14 @@ def get_d(code, table, fields):
 
 def get_cashflow_5line(code):
     df = get_d(code, 'cashflow', "c_inf_fr_operate_a,stot_inflows_inv_act,n_cashflow_act,c_paid_for_taxes,f_ann_date")
+    for i in range(0, 6):
+        newstr1 = df.loc[i, 'f_ann_date'][:-2]
+        list1 = list(newstr1)
+        list1.insert(4, '-')
+        newstr2 = ''.join(list1)
+        df.loc[i, 'f_ann_date'] = newstr2
+        df.loc[i, 'c_inf_fr_operate_a']=float( df.loc[i, 'c_inf_fr_operate_a'])/100000000
+        df.loc[i, 'stot_inflows_inv_act']=float(df.loc[i, 'stot_inflows_inv_act'])/100000000
+        df.loc[i, 'n_cashflow_act']=float(df.loc[i, 'n_cashflow_act'])/100000000
+        df.loc[i, 'c_paid_for_taxes']=float(df.loc[i, 'c_paid_for_taxes'])/100000000
     return df
