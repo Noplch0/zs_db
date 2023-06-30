@@ -52,7 +52,8 @@ def insert_data(table, value):
 
 
 def query(table, code):
-    db = pymysql.connect(host='81.70.245.162', user='root', password='lkijnfgh', database='finacedata', autocommit=True,cursorclass=pymysql.cursors.DictCursor)
+    db = pymysql.connect(host='81.70.245.162', user='root', password='lkijnfgh', database='finacedata', autocommit=True,
+                         cursorclass=pymysql.cursors.DictCursor)
     cursor = db.cursor()
     sql = r"select * from %s where code = '%s'" % (table, code)
     cursor.execute(sql)
