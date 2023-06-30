@@ -66,8 +66,49 @@ def get_cashflow_5line(code):
         list1.insert(4, '-')
         newstr2 = ''.join(list1)
         df.loc[i, 'f_ann_date'] = newstr2
-        df.loc[i, 'c_inf_fr_operate_a']=float( df.loc[i, 'c_inf_fr_operate_a'])/100000000
-        df.loc[i, 'stot_inflows_inv_act']=float(df.loc[i, 'stot_inflows_inv_act'])/100000000
-        df.loc[i, 'n_cashflow_act']=float(df.loc[i, 'n_cashflow_act'])/100000000
-        df.loc[i, 'c_paid_for_taxes']=float(df.loc[i, 'c_paid_for_taxes'])/100000000
+        df.loc[i, 'c_inf_fr_operate_a'] = "%.3f" % (float(df.loc[i, 'c_inf_fr_operate_a']) / 100000000)
+        df.loc[i, 'stot_inflows_inv_act'] = "%.3f" % (float(df.loc[i, 'stot_inflows_inv_act']) / 100000000)
+        df.loc[i, 'n_cashflow_act'] = "%.3f" % (float(df.loc[i, 'n_cashflow_act']) / 100000000)
+        df.loc[i, 'c_paid_for_taxes'] = "%.3f" % (float(df.loc[i, 'c_paid_for_taxes']) / 100000000)
+    return df
+
+
+def get_gl(code):
+    df1 = get_d(code, 'daily_basic', 'trade_date,total_mv,dv_ratio')
+    df2 = get_d(code, 'income', 'total_profit,n_income')
+    df = pd.concat([df1, df2], axis=1, join='inner')
+    for i in range(0, 6):
+        str1 = df.loc[i, 'trade_date']
+        list1 = list(str1)
+        list1.insert(4, '-')
+        list1.insert(7, '-')
+        str2 = ''.join(list1)
+        df.loc[i, 'trade_date'] = str2
+        df.loc[i, 'total_mv'] = "%.3f" % (float(df.loc[i, 'total_mv']) / 100000000)
+        df.loc[i, 'total_profit'] = "%.3f" % (float(df.loc[i, 'total_profit']) / 100000000)
+        df.loc[i, 'n_income'] = "%.3f" % (float(df.loc[i, 'n_income']) / 100000000)
+    return df.head(6)
+
+
+def get_kline(code):
+    df = get_d(code, 'daily', 'trade_date,open,close,low,high')
+    for i in range(0, df.shape[0]):
+        str1 = df.loc[i, 'trade_date']
+        list1 = list(str1)
+        list1.insert(4, '-')
+        list1.insert(7, '-')
+        str2 = ''.join(list1)
+        df.loc[i, 'trade_date'] = str2
+    return df
+
+
+def get_balancetable(code):
+    df = get_d(code, 'bak_basic', 'trade_date,total_assets,fixed_assets,pb,total_share')
+    for i in range(0, df.shape[0]):
+        str1 = df.loc[i, 'trade_date']
+        list1 = list(str1)
+        list1.insert(4, '-')
+        list1.insert(7, '-')
+        str2 = ''.join(list1)
+        df.loc[i, 'trade_date'] = str2
     return df
