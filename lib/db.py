@@ -1,9 +1,15 @@
 import pymysql
 import hashlib
 
+db_host = 'sh-cynosdbmysql-grp-elxckpf8.sql.tencentcdb.com'
+port = 22950
+user = 'root'
+password = 'LKijnfgh1234'
+database = 'regsys'
+
 
 def command_db(command):
-    db = pymysql.connect(host='81.70.245.162', user='root', password='lkijnfgh', database='regsys', autocommit=True)
+    db = pymysql.connect(host=db_host, port=22950, user=user, password=password, database=database, autocommit=True)
     cursor = db.cursor()
     cursor.execute(command)
     result = cursor.fetchall()
@@ -36,7 +42,7 @@ def get_md5(string):
 
 
 def insert_data(table, value):
-    db = pymysql.connect(host='81.70.245.162', user='root', password='lkijnfgh', database='finacedata', autocommit=True)
+    db = pymysql.connect(host=db_host, user=user, password=password, database='finacedata', autocommit=True)
     cursor = db.cursor(pymysql.cursors.DictCursor)
     # 列的字段
     keys = ', '.join(value.keys())
@@ -52,7 +58,7 @@ def insert_data(table, value):
 
 
 def query(table, code):
-    db = pymysql.connect(host='81.70.245.162', user='root', password='lkijnfgh', database='finacedata', autocommit=True,
+    db = pymysql.connect(host=db_host, user=user, password=password, database='finacedata', autocommit=True,
                          cursorclass=pymysql.cursors.DictCursor)
     cursor = db.cursor()
     sql = r"select * from %s where code = '%s'" % (table, code)

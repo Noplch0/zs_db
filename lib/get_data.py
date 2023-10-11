@@ -1,7 +1,4 @@
 import pandas as pd
-import requests
-import re
-from bs4 import BeautifulSoup
 import tushare as ts
 
 ts.set_token('099d503dd05ac189ba998bf3404df708bdb38d73171b9b32ec70db26')
