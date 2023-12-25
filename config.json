@@ -1,0 +1,82 @@
+{
+  "ts_token": "099d503dd05ac189ba998bf3404df708bdb38d73171b9b32ec70db26",
+  "损益表": {
+    "利润总额": {
+      "interface": "income",
+      "name": "total_profit"
+    },
+    "股息率": {
+      "interface": "daily_basic",
+      "name": "dv_ratio"
+    },
+    "总市值": {
+      "interface": "daily_basic",
+      "name": "total_mv"
+    },
+    "净利润": {
+      "interface": "income",
+      "name": "n_income"
+    }
+  },
+  "资产负债信息": {
+    "资产总计": {
+      "interface": "balancesheet",
+      "name": "total_assets"
+    },
+    "固定资产": {
+      "interface": "balancesheet",
+      "name": "fix_assets"
+    },
+    "市净率": {
+      "interface": "daily_basic",
+      "name": "pb"
+    },
+    "期末总股本": {
+      "interface": "balancesheet",
+      "name": "total_share"
+    }
+  },
+  "现金流": {
+    "经营现金流量": {
+      "interface": "cashflow",
+      "name": "n_cashflow_act"
+    },
+    "总税费": {
+      "interface": "cashflow",
+      "name": "c_paid_for_taxes"
+    },
+    "投资现金流入": {
+      "interface": "cashflow",
+      "name": "stot_inflows_inv_act"
+    },
+    "筹资现金流入": {
+      "interface": "cashflow",
+      "name": "stot_cash_in_fnc_act"
+    }
+  },
+  "K线图": {
+    "开盘价格": {
+      "interface": "daily",
+      "name": "open"
+    },
+    "收盘价格": {
+      "interface": "daily",
+      "name": "close"
+    },
+    "最低价格": {
+      "interface": "daily",
+      "name": "low"
+    },
+    "最高价格": {
+      "interface": "daily",
+      "name": "high"
+    }
+  },
+  "fields": {
+    "daily": "open,close,high,low",
+    "cashflow": "n_cashflow_act,c_paid_for_taxes,stot_inflows_inv_act,stot_cash_in_fnc_act",
+    "income": "total_profit,n_income",
+    "balancesheet": "total_assets,fix_assets,total_share",
+    "daily_basic": "dv_ratio,total_mv,pb"
+  }
+}

@@ -7,6 +7,7 @@ import os
 
 app = flask.Flask(__name__)
 userpath = "./data/users/"
+datapath = "./data/inf/"
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -21,14 +22,18 @@ def index():
     username = flask.request.values.get('username')
     pwd = flask.request.values.get('passwd')
     email = flask.request.values.get('email')
+    print(username)
+    print(pwd)
+    print(email)
     if username and pwd:
         if os.path.exists("{userpath}{username}.json".format(username=username, userpath=userpath)):
-            res = {'msg': '用户已存在', 'msg_code': '0011'}
+            res = {'msg': '用户已存在'}
         else:
             userdict = {'username': username, 'password': pwd, 'email': email}
-            with open("{userpath}{username}.json".format(username=username, userpath=userpath)) as file:
+            with open("{userpath}{username}.json".format(username=username, userpath=userpath), 'w') as file:
                 json.dump(userdict, file, cls=DecimalEncoder)
-            res = {'msg': '注册成功'}.update(userdict)
+            res = {'msg': '注册成功'}
+            res.update(userdict)
     else:
         res = {'msg': '必要字段未填'}
     return json.dumps(res, ensure_ascii=False)
@@ -61,10 +66,12 @@ def reset_passwd():
     if not os.path.exists("{userpath}{username}.json".format(userpath=userpath, username=username)):
         return {'msg': '用户不存在'}
     if username and origin_passwd and new_passwd:
-        with open("{userpath}{username}.json".format(userpath=userpath, username=username)) as file:
+        with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'r') as file:
             userdict = json.load(file)
-        if userdict.password==origin_passwd:
-            userdict.update({'password':new_passwd})
+        if userdict['password'] == origin_passwd:
+            userdict.update({'password': new_passwd})
+            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w') as file:
+                json.dump(userdict, file, cls=DecimalEncoder)
             res = {'msg': '修改成功'}.update(userdict)
         else:
             res = {'msg': '修改失败'}
@@ -77,12 +84,12 @@ def reset_passwd():
 def get_data():
     table = flask.request.values.get('table')
     code = flask.request.values.get('code')
-
-    if result:
-        return json.dumps(result, ensure_ascii=False, cls=DecimalEncoder)
+    if not os.path.exists("{data}{code}.json".format(data=datapath, code=code)):
+        return {'msg': '文件不存在'}
     else:
-        res = {'msg': '查询失败', 'msg_code': '0031'}
-        return json.dumps(res, ensure_ascii=False, cls=DecimalEncoder)
+        with open("{data}{code}.json".format(data=datapath, code=code)) as file:
+            data = json.load(file)
+            return data
 
 
 if __name__ == '__main__':
