@@ -82,7 +82,6 @@ def reset_passwd():
 
 @app.route('/get_data')
 def get_data():
-    table = flask.request.values.get('table')
     code = flask.request.values.get('code')
     if not os.path.exists("{data}{code}.json".format(data=datapath, code=code)):
         return {'msg': '文件不存在'}
