@@ -1,6 +1,7 @@
 import decimal
 import json
 import flask
+from flask_cors import CORS
 from lib import db
 from lib import get_data as gd
 import os
@@ -8,7 +9,7 @@ import os
 app = flask.Flask(__name__)
 userpath = "./data/users/"
 datapath = "./data/inf/"
-
+CORS(app, resources=r'/*', supports_credentials=True)
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -17,8 +18,15 @@ class DecimalEncoder(json.JSONEncoder):
         super(DecimalEncoder, self).default(o)
 
 
-@app.route('/reg')
+@app.route("/")
 def index():
+    page = open('./data/index.html', encoding='utf-8');
+    res = page.read()
+    return res
+
+
+@app.route('/reg')
+def reg():
     username = flask.request.values.get('username')
     pwd = flask.request.values.get('passwd')
     email = flask.request.values.get('email')
