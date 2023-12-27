@@ -2,7 +2,7 @@ import decimal
 import json
 import flask
 from flask_cors import CORS
-from lib import db
+from lib import jsondata as jd
 from lib import get_data as gd
 import os
 
@@ -10,6 +10,7 @@ app = flask.Flask(__name__)
 userpath = "./data/users/"
 datapath = "./data/inf/"
 CORS(app, resources=r'/*', supports_credentials=True)
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -56,7 +57,8 @@ def login():
         with open("{userpath}{username}.json".format(username=username, userpath=userpath)) as file:
             userdict = json.load(file)
         if userdict.password == pwd:
-            res = {'msg': '登录成功'}.update(userdict)
+            res = {'msg': '登录成功'}
+            res.update(userdict)
         else:
             res = {'msg': '密码错误'}
     elif not username or not pwd:
@@ -80,11 +82,32 @@ def reset_passwd():
             userdict.update({'password': new_passwd})
             with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w') as file:
                 json.dump(userdict, file, cls=DecimalEncoder)
-            res = {'msg': '修改成功'}.update(userdict)
+            res = {'msg': '修改成功'}
+            res.update(userdict)
         else:
             res = {'msg': '修改失败'}
     else:
         res = {'msg': '必要字段未填'}
+    return json.dumps(res, ensure_ascii=False)
+
+
+@app.route('/collection')
+def collection():
+    username = flask.request.values.get('username')
+    code = flask.request.values.get('code')
+    is_delete = flask.request.values.get('is_delete')
+    if not os.path.exists("{userpath}{username}.json".format(userpath=userpath, username=username)):
+        res = {'msg': '用户不存在'}
+    else:
+        with open("{userpath}{username}.json".format(userpath=userpath, username=username)) as file:
+            userdict = json.load(file)
+            new_userdict = jd.update_collections(userdict, code, is_del=int(is_delete))
+            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w') as f:
+                json.dump(new_userdict, f, cls=DecimalEncoder)
+                res = {'msg': "修改收藏成功"}
+
+                res.update(json.loads(new_userdict))
+
     return json.dumps(res, ensure_ascii=False)
 
 

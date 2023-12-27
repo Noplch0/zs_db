@@ -47,3 +47,33 @@ def add_data(orgin_json, data_json):
     o = json.loads(orgin_json)
     a = json.loads(data_json)
     return json.dumps(o + a)
+
+
+import json
+
+
+def update_collections(json_str, text, is_del=0):
+    try:
+        # 尝试解析 JSON 字符串
+        data = json.loads(json_str)
+    except json.JSONDecodeError:
+        print("Invalid JSON format")
+        return None
+
+    # 检查是否存在 "collections" 键
+    if "collections" in data:
+        # 如果 is_del 为 1，删除对应内容
+        if is_del == 1 and text in data["collections"]:
+            data["collections"].remove(text)
+        # 如果 is_del 为 0，且内容不存在，则添加
+        elif is_del == 0 and text not in data["collections"]:
+            data["collections"].append(text)
+    else:
+        # 如果 is_del 为 0，创建一个新的 "collections" 键，并将 text 添加到其中
+        if is_del == 0:
+            data["collections"] = [text]
+
+    # 将修改后的数据转换回 JSON 字符串
+    updated_json_str = json.dumps(data, ensure_ascii=False)
+
+    return updated_json_str
