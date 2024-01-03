@@ -1,24 +1,22 @@
-import pandas as pd
 import json
+from datetime import datetime
 
 
-def df_to_custom_json(df, num_rows=None):
-    # 选择要保留的行数
-    if num_rows is not None:
-        df = df.head(num_rows)
+def df_to_custom_json(df, num_rows=None, columns=None):
+    # 如果没有指定列，默认选择所有列
+    if columns is None:
+        columns = df.columns.tolist()
 
-    # 转换 DataFrame 为字典形式
-    df_dict = df.to_dict(orient='index')
+    # 选择指定的列和行
+    df_selected = df[columns].head(num_rows) if num_rows is not None else df[columns]
+
+    # 将 DataFrame 转换为字典
+    df_dict = df_selected.to_dict(orient='index')
 
     # 构建新的 JSON 格式
     custom_json = {}
     for index, values in df_dict.items():
-        custom_json[index] = {
-            'open': values['open'],
-            'high': values['high'],
-            'low': values['low'],
-            'close': values['close']
-        }
+        custom_json[index] = {col: values[col] for col in columns}
 
     return custom_json
 
@@ -49,9 +47,6 @@ def add_data(orgin_json, data_json):
     return json.dumps(o + a)
 
 
-import json
-
-
 def update_collections(json_str, text, is_del=0):
     try:
         # 尝试解析 JSON 字符串
@@ -77,3 +72,30 @@ def update_collections(json_str, text, is_del=0):
     updated_json_str = json.dumps(data, ensure_ascii=False)
 
     return updated_json_str
+
+
+def format_date(input_date):
+    # 将字符串解析为日期对象
+    date_object = datetime.strptime(str(input_date), '%Y%m%d')
+
+    # 将日期对象格式化为字符串
+    formatted_date = date_object.strftime('%Y-%m-%d')
+
+    return formatted_date
+
+
+def df_to_custom_json_kline(df, num_rows=None, columns=None):
+    if columns is None:
+        columns = df.columns.tolist()
+
+    df_selected = df[columns].head(num_rows) if num_rows is not None else df[columns]
+
+    # 对日期列应用 format_date 函数
+    if 'trade_date' in columns:
+        df_selected['trade_date'] = df_selected['trade_date'].apply(format_date)
+
+    df_dict = df_selected.to_dict(orient='index')
+
+    custom_json = {'data': [list(values.values()) for values in df_dict.values()]}
+
+    return custom_json

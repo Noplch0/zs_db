@@ -77,6 +77,7 @@
     "cashflow": "n_cashflow_act,c_paid_for_taxes,stot_inflows_inv_act,stot_cash_in_fnc_act",
     "income": "total_profit,n_income",
     "balancesheet": "total_assets,fix_assets,total_share",
-    "daily_basic": "dv_ratio,total_mv,pb"
+    "daily_basic": "dv_ratio,total_mv,pb",
+    "k_line": "trade_date,open,close,low,high,vol"
   }
 }

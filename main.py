@@ -21,7 +21,8 @@ class DecimalEncoder(json.JSONEncoder):
 
 @app.route("/")
 def index():
-    page = open('./data/index.html', encoding='utf-8');
+    page = open('./data/index.html', encoding='utf-8',
+                errors='ignore')
     res = page.read()
     return res
 
@@ -39,7 +40,8 @@ def reg():
             res = {'msg': '用户已存在'}
         else:
             userdict = {'username': username, 'password': pwd, 'email': email}
-            with open("{userpath}{username}.json".format(username=username, userpath=userpath), 'w') as file:
+            with open("{userpath}{username}.json".format(username=username, userpath=userpath), 'w', encoding='utf-8',
+                      errors='ignore') as file:
                 json.dump(userdict, file, cls=DecimalEncoder)
             res = {'msg': '注册成功'}
             res.update(userdict)
@@ -54,7 +56,8 @@ def login():
     username = flask.request.values.get('username')
     pwd = flask.request.values.get('passwd')
     if username and pwd and os.path.exists("{userpath}{username}.json".format(userpath=userpath, username=username)):
-        with open("{userpath}{username}.json".format(username=username, userpath=userpath)) as file:
+        with open("{userpath}{username}.json".format(username=username, userpath=userpath), encoding='utf-8',
+                  errors='ignore') as file:
             userdict = json.load(file)
         if userdict.password == pwd:
             res = {'msg': '登录成功'}
@@ -76,11 +79,13 @@ def reset_passwd():
     if not os.path.exists("{userpath}{username}.json".format(userpath=userpath, username=username)):
         return {'msg': '用户不存在'}
     if username and origin_passwd and new_passwd:
-        with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'r') as file:
+        with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'r', encoding='utf-8',
+                  errors='ignore') as file:
             userdict = json.load(file)
         if userdict['password'] == origin_passwd:
             userdict.update({'password': new_passwd})
-            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w') as file:
+            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w', encoding='utf-8',
+                      errors='ignore') as file:
                 json.dump(userdict, file, cls=DecimalEncoder)
             res = {'msg': '修改成功'}
             res.update(userdict)
@@ -99,10 +104,12 @@ def collection():
     if not os.path.exists("{userpath}{username}.json".format(userpath=userpath, username=username)):
         res = {'msg': '用户不存在'}
     else:
-        with open("{userpath}{username}.json".format(userpath=userpath, username=username)) as file:
+        with open("{userpath}{username}.json".format(userpath=userpath, username=username), encoding='utf-8',
+                  errors='ignore') as file:
             userdict = json.load(file)
             new_userdict = jd.update_collections(userdict, code, is_del=int(is_delete))
-            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w') as f:
+            with open("{userpath}{username}.json".format(userpath=userpath, username=username), 'w', encoding='utf-8',
+                      errors='ignore') as f:
                 json.dump(new_userdict, f, cls=DecimalEncoder)
                 res = {'msg': "修改收藏成功"}
 
@@ -117,7 +124,8 @@ def get_data():
     if not os.path.exists("{data}{code}.json".format(data=datapath, code=code)):
         return {'msg': '文件不存在'}
     else:
-        with open("{data}{code}.json".format(data=datapath, code=code)) as file:
+        with open("{data}{code}.json".format(data=datapath, code=code), encoding='utf-8',
+                  errors='ignore') as file:
             data = json.load(file)
             return data
 
